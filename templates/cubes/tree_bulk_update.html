@@ -1,0 +1,58 @@
+{% extends 'cubes/base.html' %}
+
+{% block title %}Bulk Update Trees - {{ cube.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Bulk Update Trees</h2>
+    <p class="page-subtitle">Update multiple trees in {{ cube.name }} at once</p>
+</div>
+
+<form method="post" class="bulk-update-form">
+    {% csrf_token %}
+    
+    <div class="bulk-actions-bar">
+        <div class="bulk-selectors">
+            <button type="button" class="btn btn-secondary" onclick="selectAllTrees()">Select All</button>
+            <button type="button" class="btn btn-secondary" onclick="deselectAllTrees()">Deselect All</button>
+        </div>
+        <div class="bulk-status-change">
+            <select id="bulk-status" class="form-select">
+                <option value="">Set selected to...</option>
+                {% for value, label in status_choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" class="btn btn-accent" onclick="applyBulkStatus()">Apply</button>
+        </div>
+    </div>
+
+    <div class="trees-bulk-grid">
+        {% for tree in trees %}
+            <div class="tree-bulk-card">
+                <div class="tree-bulk-header">
+                    <input type="checkbox" class="tree-checkbox" data-tree-id="{{ tree.id }}">
+                    <h4 class="tree-name">{{ tree.representative_name }}</h4>
+                </div>
+                
+                <div class="tree-bulk-status">
+                    <label for="status_{{ tree.id }}" class="form-label-sm">Status</label>
+                    <select name="status_{{ tree.id }}" id="status_{{ tree.id }}" class="form-select tree-status-select">
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" 
+                                {% if tree.status == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Selected Trees</button>
+        <a href="{% url 'cubes:cube_detail' cube.id %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

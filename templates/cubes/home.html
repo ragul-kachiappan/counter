@@ -1,0 +1,48 @@
+{% extends 'cubes/base.html' %}
+
+{% block title %}Home - Cube Manager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Your Cubes</h2>
+    <p class="page-subtitle">Manage your cubes and trees efficiently</p>
+</div>
+
+<div class="cubes-grid">
+    {% for cube in cubes %}
+        <div class="cube-card">
+            <div class="cube-card-header">
+                <h3 class="cube-name">{{ cube.name }}</h3>
+                <div class="cube-stats">
+                    <span class="stat-badge">{{ cube.number_of_trees }} trees</span>
+                </div>
+            </div>
+            
+            <div class="cube-card-content">
+                <div class="cube-meta">
+                    <p class="cube-date">Created {{ cube.created_at|date:"M d, Y" }}</p>
+                    {% if cube.updated_at != cube.created_at %}
+                        <p class="cube-date">Updated {{ cube.updated_at|date:"M d, Y" }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="cube-card-actions">
+                <a href="{% url 'cubes:cube_detail' cube.id %}" class="btn btn-primary">View Details</a>
+                <div class="action-group">
+                    <a href="{% url 'cubes:cube_update' cube.id %}" class="btn btn-secondary">Edit</a>
+                    <a href="{% url 'cubes:cube_adjust_trees' cube.id %}" class="btn btn-secondary">Adjust Trees</a>
+                    <a href="{% url 'cubes:cube_delete' cube.id %}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3 class="empty-title">No cubes yet</h3>
+            <p class="empty-description">Create your first cube to get started managing trees</p>
+            <a href="{% url 'cubes:cube_create' %}" class="btn btn-primary">Create First Cube</a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

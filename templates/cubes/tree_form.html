@@ -1,0 +1,40 @@
+{% extends 'cubes/base.html' %}
+
+{% block title %}{{ action }} Tree - {{ cube.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">{{ action }} Tree</h2>
+    <p class="page-subtitle">
+        In cube: {{ cube.name }}
+        {% if tree %} • {{ tree.representative_name }}{% endif %}
+    </p>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="status" class="form-select">
+                {% for value, label in status_choices %}
+                    <option value="{{ value }}" 
+                        {% if tree and tree.status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {{ action }} Tree
+            </button>
+            <a href="{% url 'cubes:cube_detail' cube.id %}" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

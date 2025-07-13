@@ -1,0 +1,53 @@
+{% extends 'cubes/base.html' %}
+
+{% block title %}Trees - {{ cube.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-content">
+        <div>
+            <h2 class="page-title">Trees in {{ cube.name }}</h2>
+            <p class="page-subtitle">{{ trees|length }} trees total</p>
+        </div>
+        <div class="page-actions">
+            <a href="{% url 'cubes:tree_create' cube.id %}" class="btn btn-primary">Add Tree</a>
+            <a href="{% url 'cubes:tree_bulk_update' cube.id %}" class="btn btn-accent">Bulk Update</a>
+        </div>
+    </div>
+</div>
+
+<div class="trees-list-container">
+    {% for tree in trees %}
+        <div class="tree-list-item">
+            <div class="tree-list-info">
+                <h4 class="tree-list-name">{{ tree.representative_name }}</h4>
+                <span class="tree-status-badge status-{{ tree.status_display|lower }}">
+                    {{ tree.status_display }}
+                </span>
+            </div>
+            
+            <div class="tree-list-meta">
+                <span class="tree-meta-item">ID: {{ tree.tree_id|stringformat:"03d" }}</span>
+                <span class="tree-meta-item">Updated: {{ tree.updated_at|date:"M d" }}</span>
+            </div>
+            
+            <div class="tree-list-actions">
+                <a href="{% url 'cubes:tree_detail' tree.id %}" class="btn btn-sm btn-secondary">View</a>
+                <a href="{% url 'cubes:tree_update' tree.id %}" class="btn btn-sm btn-secondary">Edit</a>
+                <a href="{% url 'cubes:tree_delete' tree.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">🌳</div>
+            <h3 class="empty-title">No trees in this cube</h3>
+            <p class="empty-description">Add some trees to get started</p>
+            <a href="{% url 'cubes:tree_create' cube.id %}" class="btn btn-primary">Add First Tree</a>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="back-navigation">
+    <a href="{% url 'cubes:cube_detail' cube.id %}" class="btn btn-secondary">← Back to {{ cube.name }}</a>
+</div>
+{% endblock %}

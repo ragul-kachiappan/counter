@@ -1,0 +1,71 @@
+{% extends 'cubes/base.html' %}
+
+{% block title %}{{ cube.name }} - Cube Manager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-content">
+        <div>
+            <h2 class="page-title">{{ cube.name }}</h2>
+            <p class="page-subtitle">{{ cube.number_of_trees }} trees • Created {{ cube.created_at|date:"M d, Y" }}</p>
+        </div>
+        <div class="page-actions">
+            <a href="{% url 'cubes:cube_update' cube.id %}" class="btn btn-secondary">Edit Cube</a>
+            <a href="{% url 'cubes:cube_adjust_trees' cube.id %}" class="btn btn-secondary">Adjust Trees</a>
+            <a href="{% url 'cubes:tree_bulk_update' cube.id %}" class="btn btn-accent">Bulk Update</a>
+        </div>
+    </div>
+</div>
+
+<!-- Status Summary -->
+<div class="status-summary">
+    <h3 class="summary-title">Status Overview</h3>
+    <div class="status-grid">
+        {% for status, count in status_counts.items %}
+            <div class="status-card status-{{ status|lower }}">
+                <div class="status-count">{{ count }}</div>
+                <div class="status-label">{{ status }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Trees Grid -->
+<div class="trees-section">
+    <div class="section-header">
+        <h3 class="section-title">Trees</h3>
+        <a href="{% url 'cubes:tree_create' cube.id %}" class="btn btn-primary">Add Tree</a>
+    </div>
+
+    <div class="trees-grid">
+        {% for tree in trees %}
+            <div class="tree-card tree-status-{{ tree.status }}">
+                <div class="tree-header">
+                    <h4 class="tree-name">{{ tree.representative_name }}</h4>
+                    <span class="tree-status-badge status-{{ tree.status_display|lower }}">
+                        {{ tree.status_display }}
+                    </span>
+                </div>
+                
+                <div class="tree-actions">
+                    <a href="{% url 'cubes:tree_detail' tree.id %}" class="btn btn-sm btn-secondary">View</a>
+                    <a href="{% url 'cubes:tree_update' tree.id %}" class="btn btn-sm btn-secondary">Edit</a>
+                    <a href="{% url 'cubes:tree_delete' tree.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">🌳</div>
+                <h3 class="empty-title">No trees in this cube</h3>
+                <p class="empty-description">Add some trees to get started</p>
+                <a href="{% url 'cubes:tree_create' cube.id %}" class="btn btn-primary">Add First Tree</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Back Navigation -->
+<div class="back-navigation">
+    <a href="{% url 'cubes:home' %}" class="btn btn-secondary">← Back to Cubes</a>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cube Manager{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="{% url 'cubes:home' %}">CubeManager</a>
+                </h1>
+                <nav class="nav">
+                    <a href="{% url 'cubes:home' %}" class="nav-link">Home</a>
+                    <a href="{% url 'cubes:cube_create' %}" class="nav-link btn-primary">New Cube</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            {% if messages %}
+                <div class="messages-container">
+                    {% for message in messages %}
+                        <div class="message message-{{ message.tags }}">
+                            <span class="message-text">{{ message }}</span>
+                            <button class="message-close" onclick="this.parentElement.remove()">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 CubeManager. Built with Django.</p>
+        </footer>
+    </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

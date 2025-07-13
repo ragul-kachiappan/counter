@@ -1,0 +1,31 @@
+{% extends 'cubes/base.html' %}
+
+{% block title %}Delete {{ cube.name }} - Cube Manager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Delete Cube</h2>
+    <p class="page-subtitle">This action cannot be undone</p>
+</div>
+
+<div class="confirmation-container">
+    <div class="warning-card">
+        <div class="warning-icon">⚠️</div>
+        <div class="warning-content">
+            <h3 class="warning-title">Are you sure you want to delete "{{ cube.name }}"?</h3>
+            <p class="warning-text">
+                This will permanently delete the cube and all {{ cube.number_of_trees }} trees within it. 
+                This action cannot be undone.
+            </p>
+        </div>
+    </div>
+
+    <form method="post" class="confirmation-form">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Yes, Delete Cube</button>
+            <a href="{% url 'cubes:cube_detail' cube.id %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

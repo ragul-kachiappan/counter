@@ -1,0 +1,68 @@
+{% extends 'cubes/base.html' %}
+
+{% block title %}{{ tree.representative_name }} - {{ tree.cube.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-content">
+        <div>
+            <h2 class="page-title">{{ tree.representative_name }}</h2>
+            <p class="page-subtitle">In cube: {{ tree.cube.name }}</p>
+        </div>
+        <div class="page-actions">
+            <a href="{% url 'cubes:tree_update' tree.id %}" class="btn btn-primary">Edit Tree</a>
+            <a href="{% url 'cubes:tree_delete' tree.id %}" class="btn btn-danger">Delete Tree</a>
+        </div>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <h3 class="detail-title">Tree Information</h3>
+        
+        <div class="detail-grid">
+            <div class="detail-item">
+                <label class="detail-label">Tree ID</label>
+                <div class="detail-value">{{ tree.tree_id|stringformat:"03d" }}</div>
+            </div>
+            
+            <div class="detail-item">
+                <label class="detail-label">Representative Name</label>
+                <div class="detail-value">{{ tree.representative_name }}</div>
+            </div>
+            
+            <div class="detail-item">
+                <label class="detail-label">Status</label>
+                <div class="detail-value">
+                    <span class="status-badge status-{{ tree.status_display|lower }}">
+                        {{ tree.status_display }}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="detail-item">
+                <label class="detail-label">Cube</label>
+                <div class="detail-value">
+                    <a href="{% url 'cubes:cube_detail' tree.cube.id %}" class="link">
+                        {{ tree.cube.name }}
+                    </a>
+                </div>
+            </div>
+            
+            <div class="detail-item">
+                <label class="detail-label">Created</label>
+                <div class="detail-value">{{ tree.created_at|date:"M d, Y \a\t H:i" }}</div>
+            </div>
+            
+            <div class="detail-item">
+                <label class="detail-label">Last Updated</label>
+                <div class="detail-value">{{ tree.updated_at|date:"M d, Y \a\t H:i" }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="back-navigation">
+    <a href="{% url 'cubes:cube_detail' tree.cube.id %}" class="btn btn-secondary">← Back to {{ tree.cube.name }}</a>
+</div>
+{% endblock %}

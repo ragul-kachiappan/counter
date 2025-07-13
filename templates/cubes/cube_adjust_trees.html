@@ -1,0 +1,88 @@
+{% extends 'cubes/base.html' %}
+
+{% block title %}Adjust Trees - {{ cube.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Adjust Tree Count</h2>
+    <p class="page-subtitle">{{ cube.name }} currently has {{ cube.number_of_trees }} trees</p>
+</div>
+
+<div class="form-container">
+    <div class="info-card">
+        <h3 class="info-title">Current Status</h3>
+        <p class="info-text">
+            Your cube has <strong>{{ cube.number_of_trees }} trees</strong> numbered from 001 to {{ cube.number_of_trees|stringformat:"03d" }}.
+        </p>
+    </div>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="new_count" class="form-label">New Tree Count</label>
+            <input 
+                type="number" 
+                id="new_count" 
+                name="new_count" 
+                class="form-input"
+                value="{{ cube.number_of_trees }}"
+                min="0"
+                required
+            >
+            <div class="form-help">
+                <p>• Increasing the count will add new trees at the end</p>
+                <p>• Decreasing the count will remove trees from the end</p>
+                <p>• Setting to 0 will remove all trees</p>
+            </div>
+        </div>
+
+        <div class="adjustment-preview" id="adjustment-preview" style="display: none;">
+            <h4 class="preview-title">Preview Changes</h4>
+            <div class="preview-content" id="preview-content"></div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                Adjust Tree Count
+            </button>
+            <a href="{% url 'cubes:cube_detail' cube.id %}" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('new_count').addEventListener('input', function() {
+    const currentCount = {{ cube.number_of_trees }};
+    const newCount = parseInt(this.value) || 0;
+    const preview = document.getElementById('adjustment-preview');
+    const previewContent = document.getElementById('preview-content');
+    
+    if (newCount !== currentCount) {
+        preview.style.display = 'block';
+        
+        if (newCount > currentCount) {
+            const treesToAdd = newCount - currentCount;
+            previewContent.innerHTML = `
+                <div class="preview-add">
+                    <strong>Will add ${treesToAdd} tree${treesToAdd !== 1 ? 's' : ''}</strong><br>
+                    New trees: ${String(currentCount + 1).padStart(3, '0')} to ${String(newCount).padStart(3, '0')}
+                </div>
+            `;
+        } else if (newCount < currentCount) {
+            const treesToRemove = currentCount - newCount;
+            previewContent.innerHTML = `
+                <div class="preview-remove">
+                    <strong>Will remove ${treesToRemove} tree${treesToRemove !== 1 ? 's' : ''}</strong><br>
+                    ${newCount > 0 ? `Removing: ${String(newCount + 1).padStart(3, '0')} to ${String(currentCount).padStart(3, '0')}` : 'Removing all trees'}
+                </div>
+            `;
+        }
+    } else {
+        preview.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

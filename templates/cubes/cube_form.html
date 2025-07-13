@@ -1,0 +1,63 @@
+{% extends 'cubes/base.html' %}
+
+{% block title %}{{ action }} Cube - Cube Manager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">{{ action }} Cube</h2>
+    <p class="page-subtitle">
+        {% if action == 'Create' %}
+            Set up a new cube with trees
+        {% else %}
+            Update cube information
+        {% endif %}
+    </p>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="name" class="form-label">Cube Name</label>
+            <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                class="form-input"
+                value="{% if cube %}{{ cube.name }}{% endif %}"
+                placeholder="Enter cube name"
+                required
+            >
+        </div>
+
+        {% if action == 'Create' %}
+            <div class="form-group">
+                <label for="number_of_trees" class="form-label">Number of Trees</label>
+                <input 
+                    type="number" 
+                    id="number_of_trees" 
+                    name="number_of_trees" 
+                    class="form-input"
+                    min="1"
+                    placeholder="Enter number of trees to create"
+                    required
+                >
+                <div class="form-help">
+                    Trees will be numbered from 001 to the number you specify
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {{ action }} Cube
+            </button>
+            <a href="{% if cube %}{% url 'cubes:cube_detail' cube.id %}{% else %}{% url 'cubes:home' %}{% endif %}" 
+               class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
